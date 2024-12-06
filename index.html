@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image Beautifier</title>
+    <title>Framify</title>
+    <meta
+      name="description"
+      content="Transform your images with stunning gradient frames and backgrounds. Create professional-looking photos with customizable styles like Midnight, Sunset, Neon, Forest and more."
+    />
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
@@ -21,6 +25,9 @@
         color: white;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Oxygen, Ubuntu, Cantarell, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
 
       .card {
@@ -63,59 +70,305 @@
         border-color: var(--accent);
         background-color: rgba(99, 102, 241, 0.1);
       }
+
+      .tab {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+      }
+
+      .tab.active {
+        border-bottom: 2px solid var(--accent);
+        color: var(--accent);
+      }
+
+      .preview-container {
+        display: none;
+      }
+
+      .preview-container.active {
+        display: block;
+      }
+
+      /* Toggle switch styles */
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #4f4f4f;
+        transition: 0.4s;
+        border-radius: 24px;
+      }
+
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .toggle-slider {
+        background-color: var(--accent);
+      }
+
+      input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+      }
+
+      /* Responsive tab container */
+      .tab-container {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .tab-container::-webkit-scrollbar {
+        display: none;
+      }
+
+      .content {
+        flex: 1;
+      }
     </style>
   </head>
-  <body class="min-h-screen p-8">
-    <div class="max-w-2xl mx-auto">
-      <div class="card p-6 mb-8">
-        <h1 class="text-2xl font-bold mb-6">Image Beautifier</h1>
+  <body class="min-h-screen">
+    <div class="content p-8">
+      <div class="max-w-2xl mx-auto">
+        <div class="card p-6 mb-8">
+          <h1
+            class="text-4xl font-extrabold mb-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+          >
+            Framify
+          </h1>
+          <p
+            class="text-gray-400 mb-6 text-lg leading-relaxed font-medium tracking-wide"
+          >
+            Add beautiful frames to your images with a single click. Transform
+            your photos into stunning works of art.
+          </p>
 
-        <div class="space-y-4">
-          <div class="drop-zone" id="dropZone">
-            <input
-              type="file"
-              id="imageInput"
-              accept="image/*"
-              class="hidden"
-            />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-12 w-12 mx-auto mb-4 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+          <div class="space-y-4">
+            <div class="drop-zone" id="dropZone">
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                class="hidden"
               />
-            </svg>
-            <p class="text-gray-300 mb-2">Drag and drop your image here</p>
-            <p class="text-gray-400 text-sm">or click to browse</p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-12 w-12 mx-auto mb-4 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <p class="text-gray-300 mb-2">Drag and drop your image here</p>
+              <p class="text-gray-400 text-sm">or click to browse</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="imagePreview" class="hidden">
-        <div class="card p-6">
-          <h2 class="text-xl font-semibold mb-4">Preview</h2>
-          <div class="image-preview">
-            <img
-              id="previewImage"
-              class="w-full h-auto rounded-lg"
-              src=""
-              alt="Preview"
-            />
-          </div>
-          <div class="mt-4">
-            <button
-              id="downloadBtn"
-              class="button px-4 py-2 rounded-lg text-white font-medium"
-            >
-              Download for Twitter
-            </button>
+        <div id="imagePreview" class="hidden">
+          <div class="card p-6">
+            <div class="tab-container flex border-b border-gray-700 mb-6">
+              <div class="tab active" data-style="midnight">Midnight</div>
+              <div class="tab" data-style="sunset">Sunset</div>
+              <div class="tab" data-style="neon">Neon</div>
+              <div class="tab" data-style="frost">Frost</div>
+              <div class="tab" data-style="forest">Forest</div>
+              <div class="tab" data-style="ocean">Ocean</div>
+              <div class="tab" data-style="desert">Desert</div>
+            </div>
+
+            <div class="mb-4 flex flex-wrap gap-6">
+              <div class="flex items-center">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="roundedToggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="ml-3 text-sm font-medium text-gray-300"
+                  >Rounded Corners</span
+                >
+              </div>
+
+              <div class="flex items-center">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="extraPaddingToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="ml-3 text-sm font-medium text-gray-300"
+                  >Extra Padding</span
+                >
+              </div>
+
+              <div class="flex items-center">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="watermarkToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="ml-3 text-sm font-medium text-gray-300"
+                  >Add Watermark</span
+                >
+              </div>
+            </div>
+
+            <div id="midnightPreview" class="preview-container active">
+              <div class="image-preview" style="background: #0f172a">
+                <img
+                  id="previewImageMidnight"
+                  class="w-full h-auto"
+                  style="border-radius: 1rem"
+                  src=""
+                  alt="Preview"
+                />
+              </div>
+            </div>
+
+            <div id="sunsetPreview" class="preview-container">
+              <div
+                class="image-preview"
+                style="
+                  background: linear-gradient(135deg, #f97316 0%, #c026d3 100%);
+                "
+              >
+                <img
+                  id="previewImageSunset"
+                  class="w-full h-auto"
+                  style="border-radius: 1rem"
+                  src=""
+                  alt="Preview"
+                />
+              </div>
+            </div>
+
+            <div id="neonPreview" class="preview-container">
+              <div
+                class="image-preview"
+                style="
+                  background: linear-gradient(135deg, #22d3ee 0%, #818cf8 100%);
+                  box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+                "
+              >
+                <img
+                  id="previewImageNeon"
+                  class="w-full h-auto"
+                  style="border-radius: 1rem"
+                  src=""
+                  alt="Preview"
+                />
+              </div>
+            </div>
+
+            <div id="frostPreview" class="preview-container">
+              <div
+                class="image-preview"
+                style="
+                  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+                "
+              >
+                <img
+                  id="previewImageFrost"
+                  class="w-full h-auto shadow-xl"
+                  style="border-radius: 1rem"
+                  src=""
+                  alt="Preview"
+                />
+              </div>
+            </div>
+
+            <div id="forestPreview" class="preview-container">
+              <div
+                class="image-preview"
+                style="
+                  background: linear-gradient(135deg, #059669 0%, #065f46 100%);
+                  box-shadow: 0 0 15px rgba(5, 150, 105, 0.3);
+                "
+              >
+                <img
+                  id="previewImageForest"
+                  class="w-full h-auto"
+                  style="border-radius: 1rem"
+                  src=""
+                  alt="Preview"
+                />
+              </div>
+            </div>
+
+            <div id="oceanPreview" class="preview-container">
+              <div
+                class="image-preview"
+                style="
+                  background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+                  box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+                "
+              >
+                <img
+                  id="previewImageOcean"
+                  class="w-full h-auto"
+                  style="border-radius: 1rem"
+                  src=""
+                  alt="Preview"
+                />
+              </div>
+            </div>
+
+            <div id="desertPreview" class="preview-container">
+              <div
+                class="image-preview"
+                style="
+                  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+                  box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+                "
+              >
+                <img
+                  id="previewImageDesert"
+                  class="w-full h-auto"
+                  style="border-radius: 1rem"
+                  src=""
+                  alt="Preview"
+                />
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <button
+                id="downloadBtn"
+                class="button px-4 py-2 rounded-lg text-white font-medium"
+              >
+                Download Image
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -124,14 +377,89 @@
     <script>
       const imageInput = document.getElementById("imageInput");
       const imagePreview = document.getElementById("imagePreview");
-      const previewImage = document.getElementById("previewImage");
       const downloadBtn = document.getElementById("downloadBtn");
       const dropZone = document.getElementById("dropZone");
+      const tabs = document.querySelectorAll(".tab");
+      const previewContainers = document.querySelectorAll(".preview-container");
+      const roundedToggle = document.getElementById("roundedToggle");
+      const extraPaddingToggle = document.getElementById("extraPaddingToggle");
+      const watermarkToggle = document.getElementById("watermarkToggle");
+      const previewImages = {
+        midnight: document.getElementById("previewImageMidnight"),
+        sunset: document.getElementById("previewImageSunset"),
+        neon: document.getElementById("previewImageNeon"),
+        frost: document.getElementById("previewImageFrost"),
+        forest: document.getElementById("previewImageForest"),
+        ocean: document.getElementById("previewImageOcean"),
+        desert: document.getElementById("previewImageDesert"),
+      };
 
-      // Handle click to upload
+      let currentStyle = "midnight";
+
+      roundedToggle.addEventListener("change", (e) => {
+        const radius = e.target.checked ? "1rem" : "0";
+        Object.values(previewImages).forEach((img) => {
+          img.style.borderRadius = radius;
+        });
+      });
+
+      extraPaddingToggle.addEventListener("change", (e) => {
+        const padding = e.target.checked ? "2rem" : "1.5rem";
+        document.querySelectorAll(".image-preview").forEach((preview) => {
+          preview.style.padding = padding;
+        });
+      });
+
+      watermarkToggle.addEventListener("change", (e) => {
+        Object.values(previewImages).forEach((img) => {
+          if (e.target.checked) {
+            img.style.opacity = "0.9";
+            // Add watermark text with background
+            const parent = img.parentElement;
+            if (!parent.querySelector(".watermark")) {
+              const watermark = document.createElement("div");
+              watermark.className = "watermark";
+              watermark.style.position = "absolute";
+              watermark.style.bottom = "1rem";
+              watermark.style.right = "1rem";
+              watermark.style.padding = "4px 8px";
+              watermark.style.borderRadius = "4px";
+              watermark.style.background = "rgba(0, 0, 0, 0.6)";
+              watermark.style.backdropFilter = "blur(4px)";
+              watermark.style.color = "white";
+              watermark.style.fontSize = "0.8rem";
+              watermark.style.fontWeight = "500";
+              watermark.style.textShadow = "0 1px 2px rgba(0, 0, 0, 0.3)";
+              watermark.style.border = "1px solid rgba(255, 255, 255, 0.1)";
+              watermark.textContent = "Created with Framify";
+              parent.style.position = "relative";
+              parent.appendChild(watermark);
+            }
+          } else {
+            img.style.opacity = "1";
+            const watermark = img.parentElement.querySelector(".watermark");
+            if (watermark) {
+              watermark.remove();
+            }
+          }
+        });
+      });
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => t.classList.remove("active"));
+          previewContainers.forEach((c) => c.classList.remove("active"));
+
+          tab.classList.add("active");
+          currentStyle = tab.dataset.style;
+          document
+            .getElementById(`${currentStyle}Preview`)
+            .classList.add("active");
+        });
+      });
+
       dropZone.addEventListener("click", () => imageInput.click());
 
-      // Handle drag and drop events
       dropZone.addEventListener("dragover", (e) => {
         e.preventDefault();
         dropZone.classList.add("dragover");
@@ -160,7 +488,10 @@
       function handleFile(file) {
         const reader = new FileReader();
         reader.onload = function (e) {
-          previewImage.src = e.target.result;
+          Object.values(previewImages).forEach((img) => {
+            img.src = e.target.result;
+            img.style.borderRadius = roundedToggle.checked ? "1rem" : "0";
+          });
           imagePreview.classList.remove("hidden");
         };
         reader.readAsDataURL(file);
@@ -169,24 +500,210 @@
       downloadBtn.addEventListener("click", function () {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
+        const currentImage = previewImages[currentStyle];
 
         // Set canvas size with padding
-        canvas.width = previewImage.naturalWidth + 80; // 40px padding on each side
-        canvas.height = previewImage.naturalHeight + 80;
+        const padding = extraPaddingToggle.checked ? 120 : 80;
+        canvas.width = currentImage.naturalWidth + padding;
+        canvas.height = currentImage.naturalHeight + padding;
 
-        // Fill background
-        ctx.fillStyle = "#1f1f23";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Fill background based on style
+        if (currentStyle === "midnight") {
+          ctx.fillStyle = "#0f172a";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        } else if (currentStyle === "sunset") {
+          const gradient = ctx.createLinearGradient(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+          gradient.addColorStop(0, "#f97316");
+          gradient.addColorStop(1, "#c026d3");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        } else if (currentStyle === "neon") {
+          const gradient = ctx.createLinearGradient(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+          gradient.addColorStop(0, "#22d3ee");
+          gradient.addColorStop(1, "#818cf8");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.shadowColor = "rgba(34, 211, 238, 0.5)";
+          ctx.shadowBlur = 20;
+        } else if (currentStyle === "frost") {
+          const gradient = ctx.createLinearGradient(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+          gradient.addColorStop(0, "#e2e8f0");
+          gradient.addColorStop(1, "#94a3b8");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.shadowColor = "rgba(0, 0, 0, 0.1)";
+          ctx.shadowBlur = 10;
+        } else if (currentStyle === "forest") {
+          const gradient = ctx.createLinearGradient(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+          gradient.addColorStop(0, "#059669");
+          gradient.addColorStop(1, "#065f46");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.shadowColor = "rgba(5, 150, 105, 0.3)";
+          ctx.shadowBlur = 15;
+        } else if (currentStyle === "ocean") {
+          const gradient = ctx.createLinearGradient(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+          gradient.addColorStop(0, "#0ea5e9");
+          gradient.addColorStop(1, "#0369a1");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.shadowColor = "rgba(14, 165, 233, 0.3)";
+          ctx.shadowBlur = 15;
+        } else if (currentStyle === "desert") {
+          const gradient = ctx.createLinearGradient(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+          gradient.addColorStop(0, "#fbbf24");
+          gradient.addColorStop(1, "#d97706");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.shadowColor = "rgba(251, 191, 36, 0.3)";
+          ctx.shadowBlur = 15;
+        }
 
-        // Draw image with padding
-        ctx.drawImage(previewImage, 40, 40);
+        // Create temporary canvas for rounded corners
+        const tempCanvas = document.createElement("canvas");
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCanvas.width = currentImage.naturalWidth;
+        tempCanvas.height = currentImage.naturalHeight;
+
+        // Draw rounded rectangle if enabled
+        if (roundedToggle.checked) {
+          const radius = 16; // 1rem = 16px
+          tempCtx.beginPath();
+          tempCtx.moveTo(radius, 0);
+          tempCtx.lineTo(tempCanvas.width - radius, 0);
+          tempCtx.quadraticCurveTo(
+            tempCanvas.width,
+            0,
+            tempCanvas.width,
+            radius
+          );
+          tempCtx.lineTo(tempCanvas.width, tempCanvas.height - radius);
+          tempCtx.quadraticCurveTo(
+            tempCanvas.width,
+            tempCanvas.height,
+            tempCanvas.width - radius,
+            tempCanvas.height
+          );
+          tempCtx.lineTo(radius, tempCanvas.height);
+          tempCtx.quadraticCurveTo(
+            0,
+            tempCanvas.height,
+            0,
+            tempCanvas.height - radius
+          );
+          tempCtx.lineTo(0, radius);
+          tempCtx.quadraticCurveTo(0, 0, radius, 0);
+          tempCtx.closePath();
+          tempCtx.clip();
+        }
+
+        // Draw the image onto the clipped context
+        tempCtx.drawImage(currentImage, 0, 0);
+
+        // Calculate padding for centered image
+        const paddingOffset = extraPaddingToggle.checked ? 60 : 40;
+        ctx.drawImage(tempCanvas, paddingOffset, paddingOffset);
+
+        // Add watermark if enabled
+        if (watermarkToggle.checked) {
+          // Add semi-transparent background for watermark
+          const watermarkText = "Created with Framify";
+          ctx.font = "14px sans-serif";
+          const metrics = ctx.measureText(watermarkText);
+          const watermarkX = canvas.width - 20;
+          const watermarkY = canvas.height - 20;
+          const padding = 8;
+
+          // Draw watermark background
+          ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+          ctx.beginPath();
+          ctx.roundRect(
+            watermarkX - metrics.width - padding,
+            watermarkY - 14 - padding / 2,
+            metrics.width + padding * 2,
+            20 + padding,
+            4
+          );
+          ctx.fill();
+
+          // Draw watermark text
+          ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+          ctx.textAlign = "right";
+          ctx.textBaseline = "bottom";
+          ctx.font = "500 14px sans-serif";
+          ctx.fillText(watermarkText, watermarkX, watermarkY);
+        }
 
         // Create download link
         const link = document.createElement("a");
-        link.download = "twitter-image.png";
+        link.download = `${currentStyle}-image.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
       });
     </script>
   </body>
+  <footer class="card p-6 text-center mx-8 mb-6">
+    <div>
+      <p class="font-medium mb-2">
+        Created by
+        <a
+          href="https://www.manuelalferez.com/"
+          target="_blank"
+          class="text-white hover:opacity-75 transition-opacity underline"
+        >
+          Manuel Alférez
+        </a>
+      </p>
+      <p class="text-gray-400">Copyright © 2024 - All rights reserved</p>
+    </div>
+    <div class="mt-6 flex justify-center">
+      <a
+        href="https://twitter.com/manuelalferez"
+        target="_blank"
+        class="text-gray-400 hover:text-white transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"
+          ></path>
+        </svg>
+      </a>
+    </div>
+  </footer>
 </html>
