@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Framify</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <meta
       name="description"
       content="Transform your images with stunning gradient frames and backgrounds. Create professional-looking photos with customizable styles like Midnight, Sunset, Neon, Forest and more."
@@ -159,11 +160,31 @@
     <div class="content p-8">
       <div class="max-w-2xl mx-auto">
         <div class="card p-6 mb-8">
-          <h1
-            class="text-4xl font-extrabold mb-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
-          >
-            Framify
-          </h1>
+          <div class="flex items-center gap-4 mb-6">
+            <svg
+              class="w-12 h-12"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="3"
+                y="3"
+                width="18"
+                height="18"
+                rx="3"
+                class="stroke-current"
+                stroke-width="2"
+              />
+              <path d="M7 7h10v10H7V7z" class="fill-current text-indigo-500" />
+              <path d="M9 9h6v6H9V9z" class="fill-current text-purple-500" />
+            </svg>
+            <h1
+              class="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+            >
+              Framify
+            </h1>
+          </div>
           <p
             class="text-gray-400 mb-6 text-lg leading-relaxed font-medium tracking-wide"
           >
